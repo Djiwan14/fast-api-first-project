@@ -8,7 +8,8 @@ BOOKS = [
     {'title': 'Title three', 'author': 'Author three', 'category': 'science'},
     {'title': 'Title four', 'author': 'Author four', 'category': 'history'},
     {'title': 'Title five', 'author': 'Author five', 'category': 'history'},
-    {'title': 'Title six', 'author': 'Author six', 'category': 'mathematics'}
+    {'title': 'Title six', 'author': 'Author six', 'category': 'mathematics'},
+    {'title': 'Title six', 'author': 'Author six', 'category': 'hey'}
 ]
 
 # Get Request Methods
@@ -30,7 +31,15 @@ async def read_category_by_query(category: str):
             books_to_return.append(book)
     return books_to_return
 
-
+# Exercise for finding book by author
+@app.get("/books/get_book/")
+async def get_book_by_author_name(author_name: str):
+    books_to_return = []
+    for book in BOOKS:
+        if book.get('author').casefold() == author_name.casefold():
+            books_to_return.append(book)
+    return books_to_return
+########################################################
 @app.get("/books/{book_author}/")
 async def read_author_category_by_query(book_author: str, category: str):
     book_to_return = []
@@ -61,3 +70,13 @@ async def delete_book(book_title: str):
         if BOOKS[i].get('title').casefold() == book_title.casefold():
             BOOKS.pop(i)
             break
+
+# Fetching all books from specific author
+# Exercise for finding book by author
+@app.get("/books/get_book/{author_name}")
+async def get_book_by_author_name(author_name: str):
+    books_to_return = []
+    for book in BOOKS:
+        if book.get('author').casefold() == author_name.casefold():
+            books_to_return.append(book)
+    return books_to_return
