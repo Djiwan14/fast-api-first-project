@@ -1,5 +1,6 @@
 from fastapi import Body, FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Optional
 
 app = FastAPI()
 
@@ -19,11 +20,11 @@ class Book:
         self.rating = rating
 
 class BookRequest(BaseModel):
-    id: int
-    title: str
-    author: str
-    description: str
-    rating: int
+    id: Optional[int] = None
+    title: str = Field(min_length=3)
+    author: str = Field(min_length=1)
+    description: str = Field(min_length=1, max_field=100)
+    rating: int = Field(gt=0, lt=6)
 
 BOOKS = [
     Book(1, "Computer Science Pro", "codingwithroby", "A very nice book!", 5),
@@ -44,4 +45,13 @@ async def create_book(book_request: BookRequest):
     # Book(**book_request.dict()) converting the request to Book object
     # Book(**book_request.dict()) = Book(**book_request.model_dump())
     new_book = Book(**book_request.dict())
-    BOOKS.append(new_book)
+    BOOKS.append(find_book_id(new_book))
+
+# This method helps us to auto increment the id of the books that are being added
+def find_book_id(book: Book):
+    if len(BOOKS) > 0:
+        book.id = BOOKS[-1].id + 1
+    else:
+        book.id = 1
+
+    return book
