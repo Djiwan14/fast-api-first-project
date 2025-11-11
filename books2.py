@@ -1,4 +1,4 @@
-from fastapi import Body, FastAPI
+from fastapi import Body, FastAPI, Path
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -56,15 +56,15 @@ async def read_all_books():
     return BOOKS
 
 @app.get("/books/{published_year}")
-async def get_book_by_year(published_year: int):
+async def get_book_by_year(published_year: int = Path(lt=2026)):
     books_to_return = []
     for book in BOOKS:
         if book.published_date == published_year:
             books_to_return.append(book)
     return books_to_return
 
-@app.get("/books/{book_id}")
-async def read_book(book_id: int):
+@app.get("/books/{book_id}/")
+async def read_book(book_id: int=  Path(gt=0)):
     for book in BOOKS:
         if book.id == book_id:
             return book
@@ -100,7 +100,7 @@ async def update_book(book: BookRequest):
             BOOKS[i] = book
 
 @app.delete("/books/{book_id}")
-async def delete_book(book_id: int):
+async def delete_book(book_id: int = Path(gt=0)):
     for i in range(len(BOOKS)):
         if BOOKS[i].id == book_id:
             BOOKS.pop(i)
