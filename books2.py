@@ -51,11 +51,11 @@ BOOKS = [
 ]
 
 
-@app.get("/books")
+@app.get("/books", tags=["Fetching Data"])
 async def read_all_books():
     return BOOKS
 
-@app.get("/books/{published_year}")
+@app.get("/books/{published_year}", tags=["Fetching Data"])
 async def get_book_by_year(published_year: int = Path(lt=2026)):
     books_to_return = []
     for book in BOOKS:
@@ -63,13 +63,13 @@ async def get_book_by_year(published_year: int = Path(lt=2026)):
             books_to_return.append(book)
     return books_to_return
 
-@app.get("/books/{book_id}/")
+@app.get("/books/{book_id}/", tags=["Fetching Data"])
 async def read_book(book_id: int=  Path(gt=0)):
     for book in BOOKS:
         if book.id == book_id:
             return book
 
-@app.get("/books/")
+@app.get("/books/", tags=["Fetching Data"])
 async def get_book_by_rating(book_rating: int):
     books_to_return = []
     for book in BOOKS:
@@ -77,7 +77,7 @@ async def get_book_by_rating(book_rating: int):
             books_to_return.append(book)
     return books_to_return
 
-@app.post("/create-book")
+@app.post("/create-book", tags=["Creating Data"])
 async def create_book(book_request: BookRequest):
     # Book(**book_request.dict()) converting the request to Book object
     # Book(**book_request.dict()) = Book(**book_request.model_dump())
@@ -93,13 +93,13 @@ def find_book_id(book: Book):
 
     return book
 
-@app.put("/books/update_book")
+@app.put("/books/update_book", tags=["Updating Data"])
 async def update_book(book: BookRequest):
     for i in range(len(BOOKS)):
         if BOOKS[i].id == book.id:
             BOOKS[i] = book
 
-@app.delete("/books/{book_id}")
+@app.delete("/books/{book_id}", tags=["Deleting Data"])
 async def delete_book(book_id: int = Path(gt=0)):
     for i in range(len(BOOKS)):
         if BOOKS[i].id == book_id:
